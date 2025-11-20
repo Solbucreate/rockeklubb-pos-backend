@@ -24,3 +24,18 @@ module.exports = {
   get:(...a)=>db.get(...a),
   all:(...a)=>db.all(...a)
 };
+
+// Opprett admin-bruker hvis den ikke finnes
+db.get(`SELECT * FROM users WHERE username = ?`, ["admin"], (err, row) => {
+  if (!row) {
+    db.run(
+      `INSERT INTO users (username, password) VALUES (?, ?)`,
+      ["admin", "1234"],
+      (err) => {
+        if (err) console.log("Kunne ikke opprette admin:", err);
+        else console.log("Admin-bruker opprettet: admin / 1234");
+      }
+    );
+  }
+});
+
